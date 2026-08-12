@@ -1,7 +1,7 @@
 /* 오아후 가족여행 — 오프라인 캐시
    일정표를 수정해 다시 올릴 때는 아래 VERSION 숫자를 올리세요.
    그래야 폰에 남아 있는 옛날 캐시가 지워지고 새 버전이 뜹니다. */
-const VERSION = 'oahu-v11';
+const VERSION = 'oahu-v26';
 
 const ASSETS = [
   './',

@@ -31,7 +31,7 @@ html[data-theme="dark"]{
   --chip:#1f3438; --blue:#1a2b38; --blueL:#2f4c63; --blueT:#a8cbe6;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);overscroll-behavior-y:none;
   font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   -webkit-text-size-adjust:100%;}
 body{padding-bottom:78px;}
@@ -171,7 +171,10 @@ ul.ck .tx small{display:block;color:var(--ink-soft);font-size:11px;margin-top:1p
 ul.ck li.done .tx b{text-decoration:line-through;color:var(--ink-faint);}
 .pr{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:20px;margin-right:4px;vertical-align:1px;}
 .due{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:20px;
-  margin-left:4px;vertical-align:1px;background:var(--chip);color:var(--teal);border:1px solid var(--teal-line);}
+  background:var(--chip);color:var(--teal);border:1px solid var(--teal-line);white-space:nowrap;}
+ul.ck .meta{display:flex;align-items:center;gap:4px;margin-bottom:3px;}
+ul.ck .meta .pr{margin-right:0;}
+ul.ck .tx b{display:block;line-height:1.4;}
 .due.now{background:#fbe3d6;color:#a1461a;border-color:#e8b79c;}
 html[data-theme="dark"] .due.now{background:#4a2a1a;color:#f0b48c;border-color:#6b3f28;}
 .prog{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:9px;}
@@ -228,6 +231,40 @@ details.sec[open] .sic{background:var(--teal);}
 .stx small{display:block;font-size:11px;color:var(--ink-soft);margin-top:1px;}
 .sbody{padding:0 12px 13px;}
 .sbody .card:first-child{margin-top:0;}
+
+.iconbtn.on{background:var(--coral);border-color:var(--coral);}
+.iconbtn.hide{display:none;}
+
+/* ── 간단히 보기: 부가 정보를 숨겨 목록만 남긴다 ── */
+#p-sch.simple .pl,
+#p-sch.simple .nt,
+#p-sch.simple .navbtn,
+#p-sch.simple .tag,
+#p-sch.simple .mini,
+#p-sch.simple .addbar,
+#p-sch.simple .addform,
+#p-sch.simple .st .dc,
+#p-sch.simple .st .wx{display:none;}
+#p-sch.simple ol.tl li{padding-bottom:7px;}
+#p-sch.simple .act{font-size:13px;font-weight:600;}
+#p-sch.simple .tm{font-size:10.5px;}
+#p-sch.simple .dbody{padding-bottom:11px;}
+#p-sch.simple summary.ds{padding:10px 13px;}
+#p-sch.simple .badge{width:40px;height:40px;}
+
+.scrollind{position:fixed;right:8px;z-index:25;pointer-events:none;
+  top:50%;            /* 구형 브라우저 대비 */
+  top:50svh;          /* 주소창 상태와 무관하게 고정된 높이 기준 */
+  background:var(--teal-deep);color:#fff;border-radius:11px;
+  padding:6px 9px;min-width:38px;text-align:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.22);
+  opacity:0;transform:translate(6px,-50%);
+  transition:opacity .18s,transform .18s;will-change:opacity,transform;}
+.scrollind.on{opacity:.95;transform:translate(0,-50%);}
+.scrollind small{display:block;font-size:16px;font-weight:700;line-height:1;}
+.scrollind b{display:block;font-family:Georgia,serif;font-size:10.5px;font-weight:700;opacity:.8;line-height:1;margin-top:3px;}
+html[data-theme="dark"] .scrollind{background:var(--teal);color:#06222a;}
+html[data-theme="dark"] .scrollind small{opacity:.75;}
 footer{max-width:660px;margin:16px auto 0;padding:0 16px;font-size:10.5px;color:var(--ink-faint);text-align:center;line-height:1.6;}
 mark{background:var(--tip);color:var(--tipT);border-radius:3px;padding:0 1px;}
 </style>
@@ -238,6 +275,7 @@ mark{background:var(--tip);color:var(--tipT);border-radius:3px;padding:0 1px;}
   <div class="hrow">
     <h1>🌺 오아후 가족여행</h1>
     <button class="iconbtn" id="bsearch" aria-label="검색">🔍</button>
+    <button class="iconbtn" id="bsimple" aria-label="간단히 보기">☰</button>
     <button class="iconbtn" id="btheme" aria-label="테마">🌙</button>
   </div>
   <p class="sub" id="hsub">2026.10.12 – 10.23 · 아기 19개월</p>
@@ -264,6 +302,7 @@ mark{background:var(--tip);color:var(--tipT);border-radius:3px;padding:0 1px;}
 
 <footer>오프라인에서도 작동합니다 · 체크 상태는 이 기기에 저장됩니다<br>홈 화면에 추가하면 앱처럼 열립니다</footer>
 <div class="toast" id="toast"></div>
+<div class="scrollind" id="scrollind"><small id="siW">월</small><b id="siD">12</b></div>
 
 <script>
 /* ---------- 환율 (파일 수정 시마다 갱신) ---------- */
@@ -433,6 +472,9 @@ const DAYS = [
 ];
 
 /* ---------- 예약 체크리스트 ---------- */
+// 기한 → 실제 날짜 (출발 10/12 기준)
+const DUE_DATE = {"D-30":"9/12", "D-14":"9/28", "D-7":"10/5", "D-1":"10/11"};
+
 const CHECK = [
  {p:"hi",  d:"지금",  l:"쿠알로아랜치 무비사이트 투어 예약", s:"10/16 · kualoa.com 직접예약, 아기 Infant 포함 · (808) 237-7321"},
  {p:"hi",  d:"지금",  l:"렌터카 11일 예약 + 카시트", s:"공항 픽업 · 공항 반납 · 카시트 별도 신청 필수"},
@@ -503,6 +545,7 @@ document.querySelectorAll('.tabs button').forEach(b=>{
     document.querySelectorAll('.pane').forEach(x=>x.classList.remove('on'));
     b.classList.add('on');
     document.getElementById('p-'+b.dataset.t).classList.add('on');
+    if(window.syncSimpleBtn) window.syncSimpleBtn(b.dataset.t);
     window.scrollTo(0,0);
   });
 });
@@ -935,7 +978,7 @@ renderPane('p-info', [
 
 /* ---------- 준비 탭 ---------- */
 const packCabin = ["여권 3인 + 사본","ESTA 승인서 출력","항공권·호텔 바우처","국제운전면허증 + 국내면허증","현금 $340 + 카드 2장 이상","기저귀 8~10장 + 물티슈","기내용 방수 교환패드","분유·이유식 (기내 반입 허용, 검색대에서 신고)","젖병·빨대컵 (이착륙용)","아기 간식 (뻥튀기·과자)","여벌 옷 2벌 + 지퍼백","아기 담요 / 애착인형","해열제·상비약 (원래 먹던 것)","좋아하는 영상 미리 다운로드","보조배터리 (위탁 불가)","얇은 겉옷 (기내 냉방)"];
-const packHold = ["아기띠 (필수)","유모차 (게이트 체크 가능)","래시가드 + 수영기저귀","아기 선크림 (SPF30+)","모자 · 선글라스","샌들 + 운동화","우비 (쿠알로아용)","방수 가방 / 지퍼백 여러 장","젖병 세척솔 + 세제","보온병","상비약 세트","돌돌이 빨래줄 · 세제 (코인세탁용)","돼지코 어댑터 (미국 110V, A타입)","즉석밥 · 김 · 아기 국"];
+const packHold = ["아기띠 (필수)","유모차 (게이트 체크 가능)","래시가드 + 수영기저귀","아기 선크림 (SPF30+)","모자 · 선글라스","샌들 + 운동화","우비 (쿠알로아용)","방수 가방 / 지퍼백 여러 장","젖병 세척솔 + 세제","보온병","상비약 세트","돌돌이 빨래줄 · 세제 (코인세탁용)","돼지코 어댑터 (미국 110V, A타입)","즉석밥 · 김 · 아기 국","홈캠 (아기 낮잠 모니터링용)"];
 const buyThere = ["기저귀·물티슈 (코스트코가 저렴)","생수 (박스로)","아기 간식·시리얼","선크림 (리프세이프 제품)","수건·비치용품","우유·요거트","과일 (파인애플·망고 저렴)"];
 const bringThis = ["아기가 먹던 분유·이유식 (브랜드가 다름)","한국 상비약 (해열제·정장제)","즉석밥·김·국 (한식 그리울 때)","아기 칫솔·치약","아기띠 (현지 구매 비쌈)","애착인형 (대체 불가)","콘센트 어댑터"];
 const jetlag = [
@@ -950,19 +993,18 @@ const cbList = (id, arr, cols) => `<ul class="ck" data-ck="${id}">` + arr.map((t
 
 renderPane('p-prep', [
 {t:`✅ 출발 전 할 일`, s:`기한별 25건 · 진행률 표시`, o:1, h:`<div class="prog" id="ckprog"></div><ul class="ck" id="ckmain"></ul>`},
-{t:`📆 기한 환산`, s:`D-30 / D-14 / D-7 / D-1 실제 날짜`, h:`<div class="card tone-blue">
-    <table class="t">
-      <tr><th>표기</th><th>실제 날짜</th></tr>
-      <tr><td><b>지금</b></td><td>즉시 — 미루면 매진·발급 지연</td></tr>
-      <tr><td>D-30</td><td>9월 12일까지</td></tr>
-      <tr><td>D-14</td><td>9월 28일까지</td></tr>
-      <tr><td>D-7</td><td>10월 5일까지</td></tr>
-      <tr><td>D-1</td><td>10월 11일</td></tr>
-    </table>
-    <div class="nt info" style="margin-top:9px;">위 체크리스트는 기한 순으로 정렬돼 있습니다. 완료하면 진행률 막대가 채워집니다.</div>
-  </div>`},
 {t:`🎒 기내용 (직접 들고 탑승)`, s:`여권 · 기저귀 · 분유 등 16건`, h:`${cbList('cabin', packCabin)}`},
-{t:`🧳 위탁 수하물`, s:`아기띠 · 래시가드 · 상비약 등 14건`, h:`${cbList('hold', packHold)}`},
+{t:`🧳 위탁 수하물`, s:`아기띠 · 래시가드 · 상비약 등 15건`, h:`${cbList('hold', packHold)}
+  <div class="card tone-tip" style="margin-top:9px">
+    <h4>홈캠 활용</h4>
+    <p>1베드룸이라 <b>침실에서 아기를 재우고 거실·라나이에서 쉬는</b> 구조가 됩니다. 홈캠을 두면 문을 닫아두고도 확인할 수 있어 저녁 시간이 훨씬 편해집니다.</p>
+    <ul>
+      <li><b>USB 어댑터·케이블</b>을 같이 챙기세요 (본체만 오면 무용지물)</li>
+      <li>호텔 와이파이는 <b>기기 등록 페이지</b>를 거쳐야 연결되는 경우가 많습니다. 홈캠은 화면이 없어 등록이 까다로우니, <b>폰 핫스팟</b>을 쓰거나 프런트에 문의하세요</li>
+      <li>출발 전 집에서 <b>핫스팟으로 연결해보고</b> 가면 현지에서 헤매지 않습니다</li>
+      <li>2.4GHz만 지원하는 모델이 많으니 핫스팟 대역을 확인하세요</li>
+    </ul>
+  </div>`},
 {t:`🛫 기내 아기 생존 키트`, s:`귀 막힘 · 야간 비행 공략`, h:`<div class="card tone-tip">
     <h4>이착륙 귀 막힘</h4>
     <p>기압이 변하는 <b>이륙 직후와 착륙 30분 전</b>에 뭔가 빨거나 삼키게 하면 귀가 뚫립니다. 젖병·빨대컵·쪽쪽이 중 아기가 잘 받는 걸 준비하세요. 자고 있으면 굳이 깨우지 않아도 됩니다.</p>
@@ -1040,7 +1082,7 @@ renderPane('p-prep', [
 {t:`📱 로밍 vs eSIM`, s:`비교표 · 추천 조합`, h:`<div class="card">
     <table class="t">
       <tr><th></th><th>통신사 로밍</th><th>eSIM</th></tr>
-      <tr><td>가격</td><td>비쌈</td><td class="r">저렴</td></tr>
+      <tr><td>가격</td><td>비쌈</td><td><b>저렴</b></td></tr>
       <tr><td>한국 번호</td><td>그대로 수신</td><td>데이터만 (통화 별도)</td></tr>
       <tr><td>설정</td><td>신청만</td><td>QR 스캔 설치</td></tr>
       <tr><td>기기</td><td>모두</td><td>eSIM 지원 폰만</td></tr>
@@ -1465,7 +1507,8 @@ function bindCk(key, ul){
   const ul=document.getElementById('ckmain');
   ul.innerHTML = CHECK.map((c,i)=>
     `<li data-i="${i}"><input type="checkbox" data-i="${i}"><div class="tx">
-      <b><span class="pr ${c.p}">${c.p==='hi'?'긴급':c.p==='mid'?'중요':'확인'}</span>${esc(c.l)}<span class="due ${c.d==='지금'?'now':''}">${esc(c.d)}</span></b>
+      <div class="meta"><span class="pr ${c.p}">${c.p==='hi'?'긴급':c.p==='mid'?'중요':'확인'}</span><span class="due ${c.d==='지금'?'now':''}">${esc(c.d)}${DUE_DATE[c.d]?` · ${DUE_DATE[c.d]}`:''}</span></div>
+      <b>${esc(c.l)}</b>
       <small>${esc(c.s)}</small></div></li>`).join('');
   bindCk('main', ul);
   // 진행률
@@ -1479,6 +1522,101 @@ function bindCk(key, ul){
   ul.addEventListener('change', ()=> setTimeout(prog,0));
   prog();
   document.querySelectorAll('ul.ck[data-ck]').forEach(u=> bindCk(u.dataset.ck, u));
+})();
+
+
+/* ---------- 간단히 보기 ---------- */
+(function(){
+  const pane=document.getElementById('p-sch'), btn=document.getElementById('bsimple');
+  function apply(on){
+    pane.classList.toggle('simple', on);
+    btn.classList.toggle('on', on);
+    btn.textContent = on ? '☷' : '☰';
+    btn.setAttribute('aria-label', on ? '자세히 보기' : '간단히 보기');
+  }
+  apply(LS.get('oahu-simple', false));
+  // 전환 전후로 보던 위치를 유지한다
+  function anchorEl(){
+    const head = document.querySelector('header.top');
+    const top  = head ? head.getBoundingClientRect().bottom : 0;
+    // 날짜 카드와 개별 일정 항목을 후보로, 화면 상단에 걸친 첫 요소를 찾는다
+    const cands = pane.querySelectorAll('details.day, ol.tl > li');
+    for(const el of cands){
+      const r = el.getBoundingClientRect();
+      if(r.bottom > top + 4) return el;
+    }
+    return cands[cands.length-1] || null;
+  }
+  btn.addEventListener('click', ()=>{
+    const on = !pane.classList.contains('simple');
+    const el = anchorEl();
+    const before = el ? el.getBoundingClientRect().top : null;
+
+    LS.set('oahu-simple', on); apply(on);
+    if(on){ const si=document.getElementById('scrollind'); if(si) si.classList.remove('on'); }
+
+    // 레이아웃이 다시 계산된 뒤 차이만큼 스크롤 보정
+    if(el && before!=null){
+      requestAnimationFrame(()=>{
+        const after = el.getBoundingClientRect().top;
+        const diff = after - before;
+        if(Math.abs(diff) > 1) window.scrollBy(0, diff);
+      });
+    }
+    toast(on ? '간단히 보기' : '자세히 보기');
+  });
+  // 일정 탭에서만 표시
+  window.syncSimpleBtn = t => btn.classList.toggle('hide', t !== 'sch');
+})();
+
+
+/* ---------- 스크롤 위치 날짜 표시 ---------- */
+(function(){
+  const ind=document.getElementById('scrollind');
+  const dEl=document.getElementById('siD'), wEl=document.getElementById('siW');
+  const pane=document.getElementById('p-sch');
+  let timer=null, ticking=false;
+
+  // 배지가 가리키는 지점(배지 중앙)이 어느 날짜 카드 제목에 걸쳐 있는지 판정
+  function dayAt(probeY){
+    const cards=pane.querySelectorAll('details.day');
+    let idx=null;
+    for(let i=0;i<cards.length;i++){
+      const s=cards[i].querySelector('summary.ds');
+      const t=(s||cards[i]).getBoundingClientRect().top;
+      if(t<=probeY) idx=i;          // 제목선을 지난 마지막 카드
+      else break;
+    }
+    return idx==null ? 0 : idx;
+  }
+
+  function update(){
+    ticking=false;
+    // 일정 탭이 아니거나 간단히 보기 중이면 표시하지 않는다
+    if(!pane.classList.contains('on') || pane.classList.contains('simple')){
+      ind.classList.remove('on'); return;
+    }
+
+    // 위치는 CSS가 고정 — 판정선은 배지의 실제 화면 좌표에서 읽는다
+    const r=ind.getBoundingClientRect();
+    const i=dayAt(r.top + r.height/2);
+    if(DAYS[i]){
+      dEl.textContent=DAYS[i].date.split('/')[1];
+      wEl.textContent=DAYS[i].dow;
+    }
+
+    ind.classList.add('on');
+    clearTimeout(timer);
+    timer=setTimeout(()=> ind.classList.remove('on'), 900);
+  }
+
+  window.addEventListener('scroll', ()=>{
+    if(!ticking){ ticking=true; requestAnimationFrame(update); }
+  }, {passive:true});
+
+  // 탭을 옮기면 즉시 숨김
+  document.querySelectorAll('.tabs button').forEach(b=>
+    b.addEventListener('click', ()=>{ if(b.dataset.t!=='sch') ind.classList.remove('on'); }));
 })();
 
 /* 헤더 서브텍스트 */
