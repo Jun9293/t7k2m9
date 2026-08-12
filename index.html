@@ -170,6 +170,14 @@ ul.ck .tx{flex:1;font-size:13px;line-height:1.45;}
 ul.ck .tx small{display:block;color:var(--ink-soft);font-size:11px;margin-top:1px;}
 ul.ck li.done .tx b{text-decoration:line-through;color:var(--ink-faint);}
 .pr{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:20px;margin-right:4px;vertical-align:1px;}
+.due{display:inline-block;font-size:9.5px;font-weight:700;padding:1px 6px;border-radius:20px;
+  margin-left:4px;vertical-align:1px;background:var(--chip);color:var(--teal);border:1px solid var(--teal-line);}
+.due.now{background:#fbe3d6;color:#a1461a;border-color:#e8b79c;}
+html[data-theme="dark"] .due.now{background:#4a2a1a;color:#f0b48c;border-color:#6b3f28;}
+.prog{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-bottom:9px;}
+.prog .pt{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700;margin-bottom:7px;}
+.prog .bar{height:8px;background:var(--line);border-radius:20px;overflow:hidden;}
+.prog .fill{height:100%;background:var(--teal);border-radius:20px;transition:width .3s;}
 .pr.hi{background:#fbe3d6;color:#a1461a;} .pr.mid{background:#fdf1de;color:#8a5a1a;} .pr.lo{background:var(--chip);color:var(--teal);}
 html[data-theme="dark"] .pr.hi{background:#4a2a1a;color:#f0b48c;}
 html[data-theme="dark"] .pr.mid{background:#3d3018;color:#e6c68f;}
@@ -200,6 +208,26 @@ button:active{opacity:.8;}
 .toast.show{opacity:1;}
 .nores{text-align:center;padding:28px 12px;color:var(--ink-faint);font-size:13px;display:none;}
 .nores.on{display:block;}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;
+  color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:7px 11px;font-family:inherit;}
+.chip span{font-size:13px;}
+.chip:active{background:var(--chip);}
+details.sec{background:var(--card);border:1px solid var(--line);border-radius:13px;
+  margin-bottom:8px;overflow:hidden;scroll-margin-top:118px;}
+details.sec[open]{border-color:var(--teal-line);}
+summary.ss{list-style:none;cursor:pointer;padding:13px 14px;display:flex;align-items:center;gap:11px;}
+summary.ss::-webkit-details-marker{display:none;}
+.sic{flex:0 0 auto;width:34px;height:34px;border-radius:9px;background:var(--chip);
+  display:flex;align-items:center;justify-content:center;font-size:16px;}
+details.sec[open] .sic{background:var(--teal);}
+.stx{flex:1;min-width:0;}
+.stx b{display:block;font-size:14px;font-weight:700;}
+.stx small{display:block;font-size:11px;color:var(--ink-soft);margin-top:1px;}
+.sbody{padding:0 12px 13px;}
+.sbody .card:first-child{margin-top:0;}
 footer{max-width:660px;margin:16px auto 0;padding:0 16px;font-size:10.5px;color:var(--ink-faint);text-align:center;line-height:1.6;}
 mark{background:var(--tip);color:var(--tipT);border-radius:3px;padding:0 1px;}
 </style>
@@ -406,21 +434,30 @@ const DAYS = [
 
 /* ---------- 예약 체크리스트 ---------- */
 const CHECK = [
- {p:"hi", l:"쿠알로아랜치 무비사이트 투어 예약", s:"10/16 · kualoa.com 직접예약, 아기 Infant 포함 · (808) 237-7321"},
- {p:"hi", l:"하나우마베이 스노쿨링 패키지 예약", s:"10/21 · '정식 입장 보장' 문구 확인"},
- {p:"hi", l:"렌터카 11일 예약 + 카시트", s:"공항 픽업 · 공항 반납"},
- {p:"hi", l:"국제운전면허 발급", s:"운전자 전원 · 여권 지참, 경찰서·면허시험장 당일 발급"},
- {p:"hi", l:"ESTA 유효기간 확인 (3인 전원)", s:"2년 유효 · 아기도 개별 필요"},
- {p:"mid", l:"현금 $340 환전", s:"$1×40 · $5×24 · $10×4 · $20×2 · $100×1(헌금)"},
- {p:"mid", l:"할레코아 주차장 최종 확인·등록", s:"(808) 955-0555 · 목표 10/1"},
- {p:"mid", l:"eSIM 구매 또는 로밍 신청", s:"[준비] 탭 비교표 참고"},
- {p:"mid", l:"여행자보험 가입 (아기 포함)", s:"의료비 담보 확인 — 미국 의료비 매우 비쌈"},
- {p:"mid", l:"힐튼 얼리체크인 여부 결정", s:"10/12 당일 컨디션 보고 ($75)"},
- {p:"mid", l:"아기 여권 유효기간 확인", s:"만료 6개월 이상 남아야 안전"},
- {p:"lo", l:"교회 한국어 예배 시간 문의", s:"(808) 536-7244"},
- {p:"lo", l:"호오말루히아 금요일 차량 허가 확인", s:"10/16 방문 전"},
- {p:"lo", l:"와이메아밸리 주차 유·무료 확인", s:"10/19 방문 전"},
- {p:"lo", l:"Bali Steak / Benihana 예약", s:"10/15, 10/22 · 리조트 인기 식당"},
+ {p:"hi",  d:"지금",  l:"쿠알로아랜치 무비사이트 투어 예약", s:"10/16 · kualoa.com 직접예약, 아기 Infant 포함 · (808) 237-7321"},
+ {p:"hi",  d:"지금",  l:"렌터카 11일 예약 + 카시트", s:"공항 픽업 · 공항 반납 · 카시트 별도 신청 필수"},
+ {p:"hi",  d:"지금",  l:"국제운전면허 발급", s:"운전자 전원 · 여권 지참, 경찰서·면허시험장 당일 발급"},
+ {p:"hi",  d:"지금",  l:"ESTA 유효기간 확인 (3인 전원)", s:"2년 유효 · 아기도 개별 필요, 만료됐으면 재신청"},
+ {p:"hi",  d:"D-30",  l:"하나우마베이 스노쿨링 예약", s:"10/21 · '정식 입장 보장' 문구 확인"},
+ {p:"hi",  d:"D-30",  l:"기내 배시넷(아기침대) 요청", s:"대한항공에 좌석 지정과 함께 요청 — 수량 제한 있음"},
+ {p:"mid", d:"D-30",  l:"여행자보험 가입 (아기 포함)", s:"의료비 담보 확인 — 미국 의료비 매우 비쌈"},
+ {p:"mid", d:"D-30",  l:"아기 여권 유효기간 확인", s:"만료 6개월 이상 남아야 안전"},
+ {p:"mid", d:"D-14",  l:"할레코아 주차장 확인·등록", s:"비군인 가능 여부·요금 · (808) 955-0555 · 목표 10/1"},
+ {p:"mid", d:"D-14",  l:"현금 $340 환전", s:"$1×40 · $5×24 · $10×4 · $20×2 · $100×1(헌금 봉투용)"},
+ {p:"mid", d:"D-14",  l:"eSIM 구매 또는 로밍 신청", s:"한 명은 로밍, 한 명은 eSIM 조합 권장"},
+ {p:"mid", d:"D-14",  l:"힐튼 얼리체크인 문의", s:"10/12 당일 컨디션 보고 최종 결정 ($75)"},
+ {p:"lo",  d:"D-14",  l:"교회 한국어 예배 시간 문의", s:"그리스도연합감리교회 (808) 536-7244"},
+ {p:"lo",  d:"D-14",  l:"Bali Steak / Benihana 예약", s:"10/15, 10/22 · 리조트 인기 식당"},
+ {p:"mid", d:"D-7",   l:"소아과에서 해열제 1회 용량 확인", s:"현재 몸무게 기준 — 메모해서 상비약과 함께 보관"},
+ {p:"mid", d:"D-7",   l:"여권·카드 사본 클라우드 저장", s:"분실 시 재발급이 훨씬 빨라짐"},
+ {p:"lo",  d:"D-7",   l:"카드사·보험사 긴급번호 메모", s:"카드를 잃으면 뒷면 번호를 볼 수 없음"},
+ {p:"lo",  d:"D-7",   l:"구글맵 오아후 지도 오프라인 저장", s:"현지에서 데이터 없어도 길찾기 가능"},
+ {p:"lo",  d:"D-7",   l:"아기 영상·음악 오프라인 다운로드", s:"기내 8시간 + 이동 중 대비"},
+ {p:"lo",  d:"D-7",   l:"호오말루히아 금요일 차량 허가 확인", s:"10/16 방문 전"},
+ {p:"lo",  d:"D-7",   l:"와이메아밸리 주차 유·무료 확인", s:"10/19 방문 전"},
+ {p:"mid", d:"D-1",   l:"보조배터리 충전 · 기내 가방에", s:"위탁 수하물 불가 — 반드시 기내로"},
+ {p:"mid", d:"D-1",   l:"기내용 가방 최종 점검", s:"아래 기내용 체크리스트로 확인"},
+ {p:"lo",  d:"D-1",   l:"렌터카·카시트 예약 확인 전화", s:"당일 문제 방지"},
 ];
 
 /* ---------- 고정비 ---------- */
@@ -695,10 +732,41 @@ function doSearch(term){
 }
 q.addEventListener('input', ()=>doSearch(q.value));
 
+
+/* ---------- 정보/준비/지출 탭: 아코디언 + 상단 바로가기 ---------- */
+function renderPane(paneId, secs){
+  const pane = document.getElementById(paneId);
+  const chips = secs.map((s,i)=>{
+    const icon = (s.t.match(/^\S+/)||[''])[0];
+    const name = s.t.replace(/^\S+\s*/,'').replace(/\s*\(.*\)$/,'');
+    return `<button class="chip" data-go="${paneId}-${i}"><span>${icon}</span>${esc(name)}</button>`;
+  }).join('');
+  const body = secs.map((s,i)=>{
+    const icon = (s.t.match(/^\S+/)||[''])[0];
+    const name = s.t.replace(/^\S+\s*/,'');
+    return `<details class="sec" id="${paneId}-${i}"${s.o?' open':''}>
+      <summary class="ss">
+        <span class="sic">${icon}</span>
+        <span class="stx"><b>${esc(name)}</b>${s.s?`<small>${esc(s.s)}</small>`:''}</span>
+        <span class="chev">▸</span>
+      </summary>
+      <div class="sbody">${s.h}</div>
+    </details>`;
+  }).join('');
+  pane.innerHTML = `<div class="chips">${chips}</div><div class="secs">${body}</div>`;
+  pane.querySelector('.chips').addEventListener('click', e=>{
+    const b = e.target.closest('[data-go]'); if(!b) return;
+    const el = document.getElementById(b.dataset.go);
+    // 누른 것만 펼치고 나머지는 접는다
+    pane.querySelectorAll('details.sec').forEach(d=>{ if(d!==el) d.open=false; });
+    el.open = true;
+    setTimeout(()=> el.scrollIntoView({behavior:'smooth', block:'start'}), 60);
+  });
+}
+
 /* ---------- 정보 탭 ---------- */
-document.getElementById('p-info').innerHTML = `
-<section class="blk"><p class="blkt">🏥 응급 · 의료</p>
-  <div class="card tone-warn">
+renderPane('p-info', [
+{t:`🏥 응급 · 의료`, s:`소아 응급실 · 워크인 클리닉 · 약국`, h:`<div class="card tone-warn">
     <h4>생명이 위급하면 → 911</h4>
     <p>영어가 어려우면 주소부터 또렷이 말하세요. 힐튼은 <b>2005 Kalia Road</b>입니다.</p>
   </div>
@@ -729,11 +797,8 @@ document.getElementById('p-info').innerHTML = `
       <li>미국 약국은 <b>처방전 없이 살 수 있는 약</b>이 앞쪽, 처방약은 안쪽 Pharmacy 카운터</li>
     </ul>
     <a class="navbtn" href="${gmap('Longs Drugs Ala Moana Center Honolulu')}" target="_blank">🧭 알라모아나점</a>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🇰🇷 한국어가 통하는 곳</p>
-  <div class="card">
+  </div>`},
+{t:`🇰🇷 한국어가 통하는 곳`, s:`교회 · 영사관 · 한인 상권`, h:`<div class="card">
     <ul>
       <li><b>그리스도연합감리교회</b> — 1639 Keeaumoku St · (808) 536-7244</li>
       <li><b>주호놀룰루 대한민국 총영사관</b> — 2756 Pali Highway</li>
@@ -741,11 +806,8 @@ document.getElementById('p-info').innerHTML = `
       <li><b>H Mart / Palama Market</b> — 한인마트, 김치·즉석밥·아기 간식</li>
       <li>와이키키 주요 상점·면세점은 한국어 직원이 있는 경우가 많습니다</li>
     </ul>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🚼 기저귀 교환대 · 수유실</p>
-  <div class="card">
+  </div>`},
+{t:`🚼 기저귀 교환대 · 수유실`, s:`있는 곳 / 없는 곳 구분`, h:`<div class="card">
     <h4>확실한 곳</h4>
     <ul>
       <li><b>알라모아나 센터</b> — 패밀리 레스트룸을 수유 라운지로 이용 가능. 위치는 Street Level 1 게스트서비스에서 안내 (보안 808-942-2944)</li>
@@ -757,11 +819,8 @@ document.getElementById('p-info').innerHTML = `
   <div class="card tone-warn">
     <h4>없다고 보는 게 안전한 곳</h4>
     <p>라니아케아 비치, 할레이바 푸드트럭 일대, 쿠알로아 버스투어 중, 하나우마베이 해변. <b>차 뒷좌석에 방수패드를 상비</b>하시고, 노스쇼어 날은 할레이바 상가 화장실에서 미리 해결하세요.</p>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🌦 10월 날씨</p>
-  <div class="card">
+  </div>`},
+{t:`🌦 10월 날씨`, s:`기온 · 강수 · 우천 대응`, h:`<div class="card">
     <p>낮 <b>27~31℃</b>, 밤 <b>23~25℃</b>. 습도 72~78%로 체감은 2~4℃ 더 덥습니다. 바다 수온 약 27℃로 아기도 오래 놀 수 있습니다.</p>
     <p>10월은 강수일이 많은 편이지만 <b>대부분 짧은 소나기</b>라 30분이면 그칩니다. 일정을 통째로 접기보다 잠깐 실내로 피하는 쪽이 낫습니다.</p>
     <ul>
@@ -770,11 +829,8 @@ document.getElementById('p-info').innerHTML = `
       <li>실내 에어컨이 매우 강함 — 아기 얇은 겉옷 필수</li>
     </ul>
     <div class="nt rain">각 날짜 카드를 펼치면 <b>우천 시 대체안</b>이 맨 아래에 있습니다.</div>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">☎️ 비상 연락처</p>
-  <div class="card">
+  </div>`},
+{t:`☎️ 비상 연락처`, s:`911 · 영사관 · 병원 · 숙소`, h:`<div class="card">
     <table class="t">
       <tr><th>구분</th><th>연락처</th></tr>
       <tr><td>긴급 (경찰·소방·구급)</td><td><b>911</b></td></tr>
@@ -788,11 +844,8 @@ document.getElementById('p-info').innerHTML = `
       <tr><td>그리스도연합감리교회</td><td>(808) 536-7244</td></tr>
     </table>
     <div class="nt warn" style="margin-top:9px;">출국 전 <b>카드사 분실신고 번호</b>와 <b>보험사 사고접수 번호</b>를 여기에 적어 두거나 따로 메모해 두세요. 카드 뒷면 번호는 카드를 잃으면 볼 수 없습니다.</div>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🆘 여권·카드 분실 시</p>
-  <div class="card">
+  </div>`},
+{t:`🆘 여권·카드 분실 시`, s:`단계별 대응 절차`, h:`<div class="card">
     <h4>여권을 잃었다면</h4>
     <ul>
       <li>① 가까운 경찰서에서 <b>Police Report</b> 발급 (재발급·보험 청구에 필요)</li>
@@ -810,8 +863,8 @@ document.getElementById('p-info').innerHTML = `
       <li>③ 현금·카드를 한 지갑에 몰아넣지 말고 객실 금고와 분산</li>
       <li>④ 긴급 현금이 필요하면 총영사관 <b>신속해외송금 지원제도</b> 문의</li>
     </ul>
-  </div>
-</section>`;
+  </div>`}
+]);
 
 /* ---------- 준비 탭 ---------- */
 const packCabin = ["여권 3인 + 사본","ESTA 승인서 출력","항공권·호텔 바우처","국제운전면허증 + 국내면허증","현금 $340 + 카드 2장 이상","기저귀 8~10장 + 물티슈","기내용 방수 교환패드","분유·이유식 (기내 반입 허용, 검색대에서 신고)","젖병·빨대컵 (이착륙용)","아기 간식 (뻥튀기·과자)","여벌 옷 2벌 + 지퍼백","아기 담요 / 애착인형","해열제·상비약 (원래 먹던 것)","좋아하는 영상 미리 다운로드","보조배터리 (위탁 불가)","얇은 겉옷 (기내 냉방)"];
@@ -828,33 +881,22 @@ const jetlag = [
 const cbList = (id, arr, cols) => `<ul class="ck" data-ck="${id}">` + arr.map((t,i)=>
   `<li data-i="${i}"><input type="checkbox" data-ck="${id}" data-i="${i}"><div class="tx"><b>${esc(t)}</b></div></li>`).join('') + `</ul>`;
 
-document.getElementById('p-prep').innerHTML = `
-<section class="blk"><p class="blkt">✅ 예약 · 확인</p><ul class="ck" id="ckmain"></ul></section>
-
-<section class="blk"><p class="blkt">📆 준비 타임라인</p>
-  <div class="card">
-    <h4>D-30 (9월 12일경)</h4>
-    <ul><li>쿠알로아·하나우마 예약 확정</li><li>렌터카 + 카시트 예약</li><li>ESTA 유효기간 확인 (3인)</li><li>여행자보험 가입</li><li>아기 여권 만료일 확인</li></ul>
-  </div>
-  <div class="card">
-    <h4>D-14 (9월 28일경)</h4>
-    <ul><li>할레코아 주차 최종 확인 (10/1 목표)</li><li>eSIM 구매 또는 로밍 신청</li><li>현금 $340 환전 (소액권 위주)</li><li>교회 예배시간 문의</li><li>상비약·아기용품 재고 점검</li></ul>
-  </div>
-  <div class="card">
-    <h4>D-7 (10월 5일경)</h4>
-    <ul><li>짐 싸기 시작 (기내/위탁 분리)</li><li>여권·카드 사본 클라우드 저장</li><li>좋아하는 영상 오프라인 다운로드</li><li>구글맵 오아후 지도 오프라인 저장</li><li>이 일정표 홈 화면에 추가</li></ul>
-  </div>
-  <div class="card">
-    <h4>D-1 (10월 11일)</h4>
-    <ul><li>보조배터리 충전 (위탁 불가, 기내로)</li><li>기내용 가방 최종 점검</li><li>카시트 예약 확인 전화</li><li>공항 이동 수단 확정</li><li>아기 낮잠 미리 재워두기</li></ul>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🎒 기내용 (직접 들고 탑승)</p>${cbList('cabin', packCabin)}</section>
-<section class="blk"><p class="blkt">🧳 위탁 수하물</p>${cbList('hold', packHold)}</section>
-
-<section class="blk"><p class="blkt">🛫 기내 아기 생존 키트</p>
-  <div class="card tone-tip">
+renderPane('p-prep', [
+{t:`✅ 출발 전 할 일`, s:`기한별 24건 · 진행률 표시`, o:1, h:`<div class="prog" id="ckprog"></div><ul class="ck" id="ckmain"></ul>`},
+{t:`📆 기한 환산`, s:`D-30 / D-14 / D-7 / D-1 실제 날짜`, h:`<div class="card tone-blue">
+    <table class="t">
+      <tr><th>표기</th><th>실제 날짜</th></tr>
+      <tr><td><b>지금</b></td><td>즉시 — 미루면 매진·발급 지연</td></tr>
+      <tr><td>D-30</td><td>9월 12일까지</td></tr>
+      <tr><td>D-14</td><td>9월 28일까지</td></tr>
+      <tr><td>D-7</td><td>10월 5일까지</td></tr>
+      <tr><td>D-1</td><td>10월 11일</td></tr>
+    </table>
+    <div class="nt info" style="margin-top:9px;">위 체크리스트는 기한 순으로 정렬돼 있습니다. 완료하면 진행률 막대가 채워집니다.</div>
+  </div>`},
+{t:`🎒 기내용 (직접 들고 탑승)`, s:`여권 · 기저귀 · 분유 등 16건`, h:`${cbList('cabin', packCabin)}`},
+{t:`🧳 위탁 수하물`, s:`아기띠 · 래시가드 · 상비약 등 14건`, h:`${cbList('hold', packHold)}`},
+{t:`🛫 기내 아기 생존 키트`, s:`귀 막힘 · 야간 비행 공략`, h:`<div class="card tone-tip">
     <h4>이착륙 귀 막힘</h4>
     <p>기압이 변하는 <b>이륙 직후와 착륙 30분 전</b>에 뭔가 빨거나 삼키게 하면 귀가 뚫립니다. 젖병·빨대컵·쪽쪽이 중 아기가 잘 받는 걸 준비하세요. 자고 있으면 굳이 깨우지 않아도 됩니다.</p>
   </div>
@@ -867,16 +909,10 @@ document.getElementById('p-prep').innerHTML = `
       <li>여벌 옷은 <b>부모 것도</b> 한 벌 — 아기가 토하거나 흘리면 부모 옷이 젖습니다</li>
       <li>지퍼백에 옷+기저귀를 세트로 나눠 담으면 어두운 기내에서 찾기 쉽습니다</li>
     </ul>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🛍 현지 구매 vs 한국에서</p>
-  <div class="card tone-ok"><h4>하와이에서 사면 되는 것</h4><ul>${buyThere.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>
-  <div class="card tone-warn"><h4>꼭 가져가야 하는 것</h4><ul>${bringThis.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>
-</section>
-
-<section class="blk"><p class="blkt">🚼 유모차 vs 아기띠</p>
-  <div class="card">
+  </div>`},
+{t:`🛍 현지 구매 vs 한국에서`, s:`사도 되는 것 / 꼭 가져갈 것`, h:`<div class="card tone-ok"><h4>하와이에서 사면 되는 것</h4><ul>${buyThere.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>
+  <div class="card tone-warn"><h4>꼭 가져가야 하는 것</h4><ul>${bringThis.map(t=>`<li>${esc(t)}</li>`).join('')}</ul></div>`},
+{t:`🚼 유모차 vs 아기띠`, s:`장소별 추천 표`, h:`<div class="card">
     <table class="t">
       <tr><th>장소</th><th>추천</th></tr>
       <tr><td>힐튼 리조트 내</td><td>유모차</td></tr>
@@ -890,11 +926,8 @@ document.getElementById('p-prep').innerHTML = `
       <tr><td>공항</td><td>유모차 (게이트 체크)</td></tr>
     </table>
     <div class="nt tip">둘 다 가져가되, <b>차 트렁크에 유모차를 상시 싣고</b> 아기띠는 백팩에 넣어 다니는 방식이 가장 편합니다.</div>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🌙 시차 적응 체크리스트</p>
-  <div class="card tone-tip">
+  </div>`},
+{t:`🌙 시차 적응 체크리스트`, s:`일자별 실천 가이드`, h:`<div class="card tone-tip">
     <p>한국-하와이는 19시간 차이지만 24시간 기준으로는 <b>반대 방향 5시간</b>과 같습니다. 늦게 자고 늦게 일어나는 방향이라 적응이 상대적으로 쉽고, 보통 <b>4~6일</b>이면 잡힙니다.</p>
   </div>
   ${jetlag.map(([d,t])=>`<div class="card"><h4>${d}</h4><p>${esc(t)}</p></div>`).join('')}
@@ -906,11 +939,8 @@ document.getElementById('p-prep').innerHTML = `
       <li>낮잠은 길어도 <b>오후 4시 전</b> 종료</li>
       <li>새벽에 깨는 건 <b>정상</b> — 불 켜지 말고 조용히 다시 재우기</li>
     </ul>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🤒 아기가 아플 때</p>
-  <div class="card tone-warn">
+  </div>`},
+{t:`🤒 아기가 아플 때`, s:`응급실 판단 기준 · 해열제 · 영어 표현`, h:`<div class="card tone-warn">
     <h4>지금 당장 응급실 (카피올라니 808-983-8633)</h4>
     <ul>
       <li>숨쉬기 힘들어하거나 입술·얼굴이 파래질 때</li>
@@ -939,11 +969,8 @@ document.getElementById('p-prep').innerHTML = `
       <li>Is there a pediatrician? — 소아과 의사 있나요?</li>
       <li>He has no allergies — 알레르기는 없어요</li>
     </ul>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">📱 로밍 vs eSIM</p>
-  <div class="card">
+  </div>`},
+{t:`📱 로밍 vs eSIM`, s:`비교표 · 추천 조합`, h:`<div class="card">
     <table class="t">
       <tr><th></th><th>통신사 로밍</th><th>eSIM</th></tr>
       <tr><td>가격</td><td>비쌈</td><td class="r">저렴</td></tr>
@@ -954,11 +981,8 @@ document.getElementById('p-prep').innerHTML = `
     <div class="nt tip"><b>추천 조합</b> — 한 명은 통신사 로밍(한국 전화 수신용), 다른 한 명은 eSIM(데이터 위주). 둘 중 하나만 문제가 생겨도 핫스팟으로 버틸 수 있습니다.</div>
     <div class="nt info">eSIM은 <b>출국 전 미리 설치</b>하고 현지 도착 후 활성화하세요. 공항 와이파이가 불안정하면 설치가 안 됩니다. 미국 요금제는 하와이 포함이 대부분이지만 <b>구매 전 하와이 커버리지</b>를 반드시 확인하세요.</div>
     <div class="nt warn">로밍을 안 쓰기로 했다면 <b>데이터 로밍을 반드시 꺼두세요</b>. 켜둔 채로 두면 요금 폭탄이 납니다.</div>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🛃 귀국 시 세관</p>
-  <div class="card">
+  </div>`},
+{t:`🛃 귀국 시 세관`, s:`면세 한도 · 반입 금지 품목`, h:`<div class="card">
     <h4>면세 한도</h4>
     <ul>
       <li>1인당 <b>미화 800달러</b> (물품 전체 합산)</li>
@@ -981,37 +1005,30 @@ document.getElementById('p-prep').innerHTML = `
     <h4>가져와도 되는 기념품</h4>
     <p>마카다미아 초콜릿, 코나 커피, 타로칩, 하와이안 썬 주스, 꿀, 화장품, 의류 — 전부 문제없습니다.</p>
     <div class="nt info">'여행자 세관신고' 앱을 미리 설치하면 QR로 빠르게 통과합니다. 2026년부터 종이 신고서는 폐지됐습니다.</div>
-  </div>
-</section>`;
+  </div>`}
+]);
 
 /* ---------- 지출 탭 ---------- */
 const foodRows = [];
 DAYS.forEach(d=>{ const f=sumBy(d,i=>i.food); if(f) foodRows.push([d.date, f]); });
 
-document.getElementById('p-money').innerHTML = `
-<section class="blk"><p class="blkt">🧮 팁 계산기</p>
-  <div class="card">
+renderPane('p-money', [
+{t:`🧮 팁 계산기`, s:`금액 입력 → 18/20% 자동 계산`, h:`<div class="card">
     <div class="tool">
       <input type="number" id="tipAmt" placeholder="계산서 금액 ($)" inputmode="decimal" step="0.01">
       <select id="tipPct"><option value="18">18%</option><option value="20" selected>20%</option><option value="15">15%</option><option value="10">10% (뷔페)</option></select>
     </div>
     <div class="out" id="tipOut">금액을 입력하세요</div>
     <div class="nt warn" style="margin-top:8px;">계산서에 <b>Gratuity가 이미 포함</b>돼 있는지 먼저 확인하세요. 포함돼 있으면 추가 팁은 불필요합니다.</div>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">💱 환산기</p>
-  <div class="card">
+  </div>`},
+{t:`💱 환율계산기`, s:`$ ↔ ₩ 즉석 변환`, h:`<div class="card">
     <div class="tool">
       <input type="number" id="cvAmt" placeholder="금액" inputmode="decimal" step="0.01">
       <select id="cvDir"><option value="u2k">$ → ₩</option><option value="k2u">₩ → $</option></select>
     </div>
     <div class="out" id="cvOut">${USD_KRW.toLocaleString()}원/$ 기준 (${RATE_ASOF})</div>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">💳 카드 vs 현금</p>
-  <div class="card">
+  </div>`},
+{t:`💳 카드 vs 현금`, s:`상황별 결제 수단 · 현금 $340 구성`, h:`<div class="card">
     <table class="t">
       <tr><th>상황</th><th>수단</th></tr>
       <tr><td>호텔·식당·마트·투어</td><td>카드</td></tr>
@@ -1025,11 +1042,8 @@ document.getElementById('p-money').innerHTML = `
     </table>
     <div class="nt tip"><b>현금 $340</b> — $1×40 · $5×24 · $10×4 · $20×2 · $100×1(헌금 봉투용). $50·$100권은 소액 상점에서 거부되니 헌금용 외엔 빼고 환전하세요.</div>
     <div class="nt info">카드는 <b>해외결제 수수료가 낮은 카드</b>로. 결제 시 "USD로 할까요, KRW로 할까요?" 물으면 <b>반드시 USD(현지통화)</b>를 고르세요. 원화 결제는 수수료가 더 붙습니다.</div>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🧾 영수증 관리</p>
-  <div class="card">
+  </div>`},
+{t:`🧾 영수증 관리`, s:`사진 정리법`, h:`<div class="card">
     <p>영수증은 찍어서 <b>Claude 대화창에 올려주시면</b> 금액을 읽어 정리해드립니다. 못 찍은 것만 아래에 직접 입력하세요.</p>
     <h4>폴더 구조 (폰 앨범 기준)</h4>
     <ul>
@@ -1038,11 +1052,8 @@ document.getElementById('p-money').innerHTML = `
       <li>카드 전표에 <b>팁을 손으로 적는</b> 경우가 많으니 <b>팁 적힌 최종본</b>을 찍으세요</li>
       <li>귀국 후 정산·보험 청구 때까지 지우지 말 것</li>
     </ul>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">💰 실제 지출 기록</p>
-  <div class="card">
+  </div>`},
+{t:`💰 실제 지출 기록`, s:`입력 · 분류별 집계 · 정산 리포트`, o:1, h:`<div class="card">
     <div class="tool">
       <input type="date" id="xDate" style="flex:1.2">
       <select id="xCat"><option>식비</option><option>활동·투어</option><option>장보기</option><option>교통·주차</option><option>쇼핑</option><option>기타</option></select>
@@ -1057,11 +1068,8 @@ document.getElementById('p-money').innerHTML = `
       <button class="gh" id="xCopy" style="flex:1">📋 복사</button>
       <button class="gh" id="xClear">삭제</button>
     </div>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">🔄 두 폰 기록 합치기</p>
-  <div class="card">
+  </div>`},
+{t:`🔄 두 폰 기록 합치기`, s:`내보내기 / 불러오기 · 붙여넣기`, h:`<div class="card">
     <p>체크와 지출 기록은 <b>각자 폰에만</b> 저장됩니다. 내보낸 코드를 카톡으로 보내 상대 폰에서 불러오면 두 기록이 <b>합쳐집니다</b>.</p>
     <p style="margin-top:6px"><b>Claude가 준 지출 목록</b>도 여기에 그대로 붙여넣으면 됩니다. 영수증을 찍어 올리면 아래 형식으로 받게 됩니다.</p>
     <div class="nt info" style="margin-top:6px;font-family:monospace;font-size:11px;line-height:1.7">10/16 · 식비 · 100 · Tropics 저녁<br>10/16 · 활동·투어 · 125.55 · 쿠알로아</div>
@@ -1076,18 +1084,15 @@ document.getElementById('p-money').innerHTML = `
       <button class="go" id="syGo" style="width:100%;margin-top:6px">합치기</button>
     </div>
     <div class="nt info" style="margin-top:9px;">합친 뒤 <b>양쪽 폰에서 각각 내보내기·불러오기</b>를 한 번씩 하면 둘 다 같은 상태가 됩니다. 같은 줄을 두 번 붙여넣어도 중복되지 않습니다.</div>
-  </div>
-</section>
-
-<section class="blk"><p class="blkt">📊 예상 지출</p>
-  <div class="card tone-ok">
+  </div>`},
+{t:`📊 예상 지출`, s:`항목별 예산 · 총액`, h:`<div class="card tone-ok">
     <table class="t" id="budget"></table>
     <div class="nt tip" style="margin-top:9px;">
       <b>최종 정산 원칙</b> — 항공권은 원화 결제이므로 여행 종료 후 최종 계산에서는 환율 환산 없이 <b>영수증상 원화 금액</b>을 그대로 반영합니다. 본인 1,977,600원 · 아내 2,350,000원 (합계 4,327,600원). 위 달러 금액은 참고용 환산치(${USD_KRW.toLocaleString()}원/$)입니다.
     </div>
     <div class="nt info" style="margin-top:7px;">목표 예산 2,000~2,500만원 대비 하단에 맞춰 잡았습니다.</div>
-  </div>
-</section>`;
+  </div>`}
+]);
 
 /* 예산표 */
 (function(){
@@ -1372,8 +1377,19 @@ function bindCk(key, ul){
   const ul=document.getElementById('ckmain');
   ul.innerHTML = CHECK.map((c,i)=>
     `<li data-i="${i}"><input type="checkbox" data-i="${i}"><div class="tx">
-      <b><span class="pr ${c.p}">${c.p==='hi'?'긴급':c.p==='mid'?'중요':'확인'}</span>${esc(c.l)}</b><small>${esc(c.s)}</small></div></li>`).join('');
+      <b><span class="pr ${c.p}">${c.p==='hi'?'긴급':c.p==='mid'?'중요':'확인'}</span>${esc(c.l)}<span class="due ${c.d==='지금'?'now':''}">${esc(c.d)}</span></b>
+      <small>${esc(c.s)}</small></div></li>`).join('');
   bindCk('main', ul);
+  // 진행률
+  function prog(){
+    const done = LS.get('oahu-ck-main',[]).length, all = CHECK.length;
+    const left = CHECK.filter((c,i)=> !LS.get('oahu-ck-main',[]).includes(i) && (c.d==='지금'||c.p==='hi')).length;
+    document.getElementById('ckprog').innerHTML =
+      `<div class="pt"><span>출발 준비 ${done}/${all}</span><span style="color:${left?'#a1461a':'var(--okT)'}">${left?'긴급 '+left+'건 남음':'긴급 항목 완료 ✓'}</span></div>
+       <div class="bar"><div class="fill" style="width:${Math.round(done/all*100)}%"></div></div>`;
+  }
+  ul.addEventListener('change', ()=> setTimeout(prog,0));
+  prog();
   document.querySelectorAll('ul.ck[data-ck]').forEach(u=> bindCk(u.dataset.ck, u));
 })();
 
