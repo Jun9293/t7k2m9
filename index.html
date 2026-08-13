@@ -118,30 +118,41 @@ details.day[open] .chev{transform:rotate(90deg);}
 
 .dbody{padding:0 13px 13px;}
 ol.tl{list-style:none;margin:4px 0 0;padding:0;border-left:2px solid var(--line);margin-left:6px;}
-ol.tl li{position:relative;padding:0 0 13px 15px;}
-ol.tl li::before{content:"";position:absolute;left:-6px;top:4px;width:9px;height:9px;border-radius:50%;background:var(--teal);}
+ol.tl li{position:relative;padding:0 0 11px 14px;}
+ol.tl li::before{content:"";position:absolute;left:-6px;top:6px;width:9px;height:9px;border-radius:50%;background:var(--teal);}
 ol.tl li:last-child{padding-bottom:0;}
 ol.tl li.done{opacity:.42;}
 ol.tl li.done::before{background:var(--ink-faint);}
-ol.tl li.done .act{text-decoration:line-through;}
-.tm{font-size:11px;color:var(--coral);font-weight:700;}
-.act{font-size:13.5px;font-weight:600;margin-top:1px;display:flex;align-items:flex-start;gap:5px;flex-wrap:wrap;}
-.act .cb{flex:0 0 auto;width:17px;height:17px;margin:1px 2px 0 0;accent-color:var(--teal);}
-.pl{font-size:12px;color:var(--ink-soft);margin-top:2px;line-height:1.5;}
-.pl.food::before{content:"🍽 ";} .pl.car::before{content:"🚗 ";} .pl.walk::before{content:"🚶 ";}
-a.lk{color:var(--ink);text-decoration:underline;text-decoration-color:var(--coral);text-underline-offset:2px;}
+ol.tl li.done .nm{text-decoration:line-through;}
+
+/* 시각·일정명·배지를 한 줄에 */
+.act{display:flex;align-items:baseline;flex-wrap:wrap;gap:5px;font-size:13.5px;line-height:1.45;}
+.act .cb{flex:0 0 auto;width:17px;height:17px;align-self:flex-start;margin:2px 1px 0 0;accent-color:var(--teal);}
+.tm{flex:0 0 auto;font-size:11px;font-weight:700;color:var(--coral);min-width:42px;}
+.nm{font-weight:600;}
 .tag{font-size:10px;border-radius:20px;padding:1px 6px;font-weight:700;white-space:nowrap;}
 .tag.cost{background:var(--ok);color:var(--okT);border:1px solid var(--okL);}
-.tag.tip{background:var(--tip);color:var(--tipT);border:1px solid var(--tipL);}
 .tag.dur{background:var(--chip);color:var(--teal);border:1px solid var(--teal-line);}
-.tag.ko{background:var(--blue);color:var(--blueT);border:1px solid var(--blueL);}
-.tag.bb{background:#f6ecf7;color:#6b3a75;border:1px solid #ddc2e2;}
-html[data-theme="dark"] .tag.bb{background:#2f2136;color:#dcb6e6;border-color:#4a3352;}
-.nt{margin-top:5px;border-radius:8px;padding:6px 9px;font-size:11.5px;line-height:1.55;}
-.nt.tip{background:var(--tip);border:1px solid var(--tipL);color:var(--tipT);}
-.nt.warn{background:var(--warn);border:1px solid var(--warnL);color:var(--warnT);}
-.nt.info{background:var(--chip);border:1px solid var(--teal-line);color:var(--teal);}
-.nt.rain{background:var(--blue);border:1px solid var(--blueL);color:var(--blueT);}
+.tag.ico{background:none;border:none;padding:0;font-size:12px;letter-spacing:1px;}
+.tag.bb{background:#e8f1fb;border:1px solid #c3daf2;padding:1px 5px;font-size:11px;letter-spacing:1px;}
+html[data-theme="dark"] .tag.bb{background:#1d2c3d;border-color:#33506e;}
+.tag.new{background:none;border:none;padding:0;font-size:11px;}
+.mini{margin-left:auto;background:none;border:none;color:var(--ink-faint);font-size:12px;padding:0 2px;font-family:inherit;line-height:1;}
+
+/* 장소 줄 */
+.pl{font-size:12px;color:var(--ink-soft);margin:2px 0 0 22px;line-height:1.5;}
+.pl.food::before{content:"🍽 ";} .pl.car::before{content:"🚗 ";} .pl.walk::before{content:"🚶 ";}
+a.lk{color:var(--ink);text-decoration:underline;text-decoration-color:var(--coral);text-underline-offset:2px;}
+.navi{font-size:10px;opacity:.75;text-decoration:none;display:inline-block;}
+
+/* 메모 — 상자 대신 왼쪽 선으로 가볍게 */
+.nt{margin:3px 0 0 22px;padding:2px 0 2px 8px;font-size:11.5px;line-height:1.5;
+  border-left:3px solid var(--teal-line);color:var(--ink-soft);background:none;border-radius:0;}
+.nt.tip{border-left-color:var(--tipL);color:var(--tipT);}
+.nt.warn{border-left-color:var(--warnL);color:var(--warnT);}
+.nt.info{border-left-color:var(--teal-line);color:var(--ink-soft);}
+.nt.rain{border-left-color:var(--blueL);color:var(--blueT);margin-left:6px;}
+
 .addbar{margin:10px 0 0 6px;}
 .addbtn{font-size:11.5px;font-weight:700;color:var(--teal);background:var(--card);
   border:1px dashed var(--teal-line);border-radius:8px;padding:7px 11px;font-family:inherit;}
@@ -155,12 +166,8 @@ html[data-theme="dark"] .tag.bb{background:#2f2136;color:#dcb6e6;border-color:#4
 .addform .ok{background:var(--teal);color:#fff;flex:1;} .addform .no{background:var(--card);color:var(--ink-soft);border:1px solid var(--line);}
 ol.tl li.custom::before{background:var(--coral);}
 ol.tl li.cancel{opacity:.4;}
-ol.tl li.cancel .act span:first-of-type{text-decoration:line-through;}
+ol.tl li.cancel .nm{text-decoration:line-through;}
 ol.tl li.cancel::before{background:var(--ink-faint);}
-.mini{background:none;border:none;color:var(--ink-faint);font-size:12px;padding:0 3px;font-family:inherit;line-height:1;}
-.tag.new{background:var(--tip);color:var(--tipT);border:1px solid var(--tipL);}
-.navbtn{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:11.5px;font-weight:700;color:#fff;
-  background:var(--teal);border-radius:8px;padding:6px 10px;text-decoration:none;}
 
 ul.ck{list-style:none;margin:0;padding:0;background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden;}
 ul.ck li{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-bottom:1px solid var(--line);}
@@ -246,7 +253,8 @@ details.sec[open] .sic{background:var(--teal);}
 #p-sch.simple .st .dc,
 #p-sch.simple .st .wx{display:none;}
 #p-sch.simple ol.tl li{padding-bottom:7px;}
-#p-sch.simple .act{font-size:13px;font-weight:600;}
+#p-sch.simple .act{font-size:13px;}
+#p-sch.simple ol.tl li{padding-bottom:6px;}
 #p-sch.simple .tm{font-size:10.5px;}
 #p-sch.simple .dbody{padding-bottom:11px;}
 #p-sch.simple summary.ds{padding:10px 13px;}
@@ -265,6 +273,9 @@ details.sec[open] .sic{background:var(--teal);}
 .scrollind b{display:block;font-family:Georgia,serif;font-size:10.5px;font-weight:700;opacity:.8;line-height:1;margin-top:3px;}
 html[data-theme="dark"] .scrollind{background:var(--teal);color:#06222a;}
 html[data-theme="dark"] .scrollind small{opacity:.75;}
+.lg{font-size:10.5px;color:var(--ink-faint);line-height:1.7;margin:6px 0 0;}
+.lg b{font-weight:400;}
+.bbi{font-style:normal;display:inline-block;filter:hue-rotate(185deg) saturate(1.35);}
 footer{max-width:660px;margin:16px auto 0;padding:0 16px;font-size:10.5px;color:var(--ink-faint);text-align:center;line-height:1.6;}
 mark{background:var(--tip);color:var(--tipT);border-radius:3px;padding:0 1px;}
 </style>
@@ -279,6 +290,7 @@ mark{background:var(--tip);color:var(--tipT);border-radius:3px;padding:0 1px;}
     <button class="iconbtn" id="btheme" aria-label="테마">🌙</button>
   </div>
   <p class="sub" id="hsub">2026.10.12 – 10.23 · 아기 19개월</p>
+  <div class="lg" id="lg">💵 팁 · 💴 현금 · 📞 예약 · 🇰🇷 한국어 · 🥡 포장 · <i class="bbi">🚼</i> 기저귀대 · 🍼 수유실 · ✏️ 직접 추가</div>
   <div class="searchwrap" id="sw"><input type="search" id="q" placeholder="식당·장소·활동 검색"></div>
   <div class="tabs">
     <button data-t="sch" class="on">📅 일정</button>
@@ -595,37 +607,47 @@ function itemHTML(it, di, ii){
   const off = cancelled.has(id);
   const cls = it.food?'food':(it.car?'car':(it.walk?'walk':''));
   const q = it.q || it.dest;
-  const destL = it.dest ? `<a class="lk" href="${gmap(q)}" target="_blank" rel="noopener">${esc(it.dest)}</a>` : '';
-  const detail = it.pl ? esc(it.pl) : '';
-  const line = destL && detail ? `${destL} · ${detail}` : (destL || detail);
+
+  // ① 장소 줄 — 목적지 자체가 길찾기 링크
+  const destL = it.dest
+    ? `<a class="lk" href="${gdir(q, it.walk?'walking':'driving')}" target="_blank" rel="noopener">${esc(it.dest)}${it.noNav?'':' <span class="navi">🧭</span>'}</a>`
+    : '';
+  const line = [destL, it.pl?esc(it.pl):''].filter(Boolean).join(' · ');
   const plHTML = line ? `<div class="pl ${cls}">${line}</div>` : '';
+
+  // ② 배지 — 수치는 글자로, 나머지는 아이콘 하나로 압축
   let tags = '';
-  if(it.lb)      tags += `<span class="tag cost">${esc(it.lb)}</span>`;
-  if(it.dur)     tags += `<span class="tag dur">⏱ ${esc(it.dur)}</span>`;
-  if(it.tipReq)  tags += `<span class="tag tip">💵 팁</span>`;
-  if(it.cash)    tags += `<span class="tag tip">💴 ${esc(it.cash)}</span>`;
-  if(it.ko)      tags += `<span class="tag ko">🇰🇷 한국어</span>`;
-  if(it.diaper)  tags += `<span class="tag bb">🚼 기저귀대</span>`;
-  if(it.nursing) tags += `<span class="tag bb">🍼 수유실</span>`;
-  if(it.to)      tags += `<span class="tag dur">🥡 포장</span>`;
-  if(it.resv)    tags += `<span class="tag tip">📞 예약</span>`;
+  if(it.lb)  tags += `<span class="tag cost">${esc(it.lb)}</span>`;
+  if(it.dur) tags += `<span class="tag dur">${esc(it.dur)}</span>`;
+  let ico = '';
+  if(it.tipReq)  ico += '💵';
+  if(it.cash)    ico += '💴';
+  if(it.resv)    ico += '📞';
+  if(it.ko)      ico += '🇰🇷';
+  if(it.to)      ico += '🥡';
+  if(ico) tags += `<span class="tag ico" title="${it.cash?esc(it.cash):''}">${ico}</span>`;
+  let baby = '';
+  if(it.diaper)  baby += '<i class="bbi">🚼</i>';
+  if(it.nursing) baby += '🍼';
+  if(baby) tags += `<span class="tag bb">${baby}</span>`;
+  if(it.cid) tags += `<span class="tag new">✏️</span>`;
+
+  // ③ 메모 — 주차 정보까지 한 덩어리로 합친다
   let nts = '';
   if(it.nt)   nts += `<div class="nt ${it.ntType||'info'}">${esc(it.nt)}</div>`;
   if(it.park) nts += `<div class="nt info">🅿️ ${esc(it.park)}</div>`;
-  const nav = (it.dest && !it.noNav)
-    ? `<a class="navbtn" href="${gdir(q, it.walk?'walking':'driving')}" target="_blank" rel="noopener">🧭 길찾기</a>` : '';
-  if(it.cid) tags += `<span class="tag new">✏️ 추가</span>`;
+
   const ctl = it.cid
-    ? `<button class="mini" data-del="${it.cid}" data-day="${di}" title="삭제">✕</button>`
-    : `<button class="mini" data-cancel="${id}" title="${off?'되살리기':'취소'}">${off?'↺':'⊘'}</button>`;
+    ? `<button class="mini" data-del="${it.cid}" data-day="${di}">✕</button>`
+    : `<button class="mini" data-cancel="${id}">${off?'↺':'⊘'}</button>`;
+
   return `<li class="${on?'done':''}${off?' cancel':''}${it.cid?' custom':''}" data-id="${id}">
-    <div class="tm">${esc(it.t||'')}</div>
     <div class="act"><input type="checkbox" class="cb" data-id="${id}" ${on?'checked':''}>
-      <span>${esc(it.a)}</span>${tags}${ctl}</div>
-    ${plHTML}${nts}${nav}</li>`;
+      ${it.t?`<span class="tm">${esc(it.t)}</span>`:''}
+      <span class="nm">${esc(it.a)}</span>${tags}${ctl}</div>
+    ${plHTML}${nts}</li>`;
 }
 
-// 기본 일정 + 직접 추가한 일정을 시간순으로 합친다
 function mergedItems(d, di){
   const base = d.items.map((it,ii)=>({it, ii, h:hourOf(it.t)}));
   const add  = (extra[di]||[]).map(it=>({it, ii:-1, h:hourOf(it.t)}));
@@ -981,6 +1003,20 @@ const packCabin = ["여권 3인 + 사본","ESTA 승인서 출력","항공권·�
 const packHold = ["아기띠 (필수)","유모차 (게이트 체크 가능)","래시가드 + 수영기저귀","아기 선크림 (SPF30+)","모자 · 선글라스","샌들 + 운동화","우비 (쿠알로아용)","방수 가방 / 지퍼백 여러 장","젖병 세척솔 + 세제","보온병","상비약 세트","돌돌이 빨래줄 · 세제 (코인세탁용)","돼지코 어댑터 (미국 110V, A타입)","즉석밥 · 김 · 아기 국","홈캠 (아기 낮잠 모니터링용)"];
 const buyThere = ["기저귀·물티슈 (코스트코가 저렴)","생수 (박스로)","아기 간식·시리얼","선크림 (리프세이프 제품)","수건·비치용품","우유·요거트","과일 (파인애플·망고 저렴)"];
 const bringThis = ["아기가 먹던 분유·이유식 (브랜드가 다름)","한국 상비약 (해열제·정장제)","즉석밥·김·국 (한식 그리울 때)","아기 칫솔·치약","아기띠 (현지 구매 비쌈)","애착인형 (대체 불가)","콘센트 어댑터"];
+const packWear = [
+ "상의 (11박 · 세탁 감안 6~7벌)","하의 (반바지 위주 4~5벌)","속옷 · 양말 (넉넉히)",
+ "잠옷 (부부 각 2벌)","수영복 · 래시가드 (부부)","비치타월 겸용 얇은 타월",
+ "얇은 긴팔 겉옷 (냉방·야간용)","모자 (챙 넓은 것)","선글라스",
+ "샌들 · 슬리퍼 (물놀이용)","운동화 (노스쇼어·쿠알로아용)","교회용 단정한 옷 (10/18)",
+ "저녁 외식용 옷 (베니하나·발리)","우비 또는 접이식 우산"];
+
+const packWash = [
+ "칫솔 · 치약 (호텔에 없는 경우 많음)","클렌징 · 스킨케어","성인 선크림 (SPF50+)",
+ "면도기 · 면도용품","여성용품","머리끈 · 빗","헤어드라이어는 객실 비치 (불필요)",
+ "샴푸 · 린스 (예민하면 지참, 아니면 호텔 것)","바디워시 (호텔 제공)","손톱깎이",
+ "면봉 · 화장솜","알로에젤 (햇볕 화상용)","모기기피제","세탁세제 (코인세탁용)",
+ "지퍼백 · 비닐봉투 (젖은 옷·모래 옷 분리)"];
+
 const jetlag = [
  ["10/12","도착 당일 — 하와이 시간으로 먹이고 재우기 시작. 밤에 안 자도 정상"],
  ["10/13","새벽에 깨도 방 어둡게. 아침에 햇빛 아래(라군)로 나가기"],
@@ -1004,6 +1040,20 @@ renderPane('p-prep', [
       <li>출발 전 집에서 <b>핫스팟으로 연결해보고</b> 가면 현지에서 헤매지 않습니다</li>
       <li>2.4GHz만 지원하는 모델이 많으니 핫스팟 대역을 확인하세요</li>
     </ul>
+  </div>`},
+{t:`👕 부부 의류`, s:`11박 기준 · 세탁 감안 14건`, h:`${cbList('wear', packWear)}
+  <div class="card tone-tip" style="margin-top:9px">
+    <p>숙소에 <b>코인 세탁실</b>이 있으니 11박 전부를 챙길 필요가 없습니다. 5~6일치만 가져가 중간에 한 번 돌리는 쪽이 짐이 훨씬 가볍습니다.</p>
+    <p>하와이는 <b>격식 있는 옷이 거의 필요 없습니다.</b> 다만 <b>10/18 교회</b>와 저녁 외식 때 입을 단정한 옷 한 벌씩은 챙기세요.</p>
+    <p>실내 <b>냉방이 매우 강합니다.</b> 얇은 긴팔은 부부 것도 꼭 넣으세요.</p>
+  </div>`},
+{t:`🧴 세면 · 위생용품`, s:`호텔 제공품 구분 · 15건`, h:`${cbList('wash', packWash)}
+  <div class="card tone-blue" style="margin-top:9px">
+    <h4>호텔에 있는 것 / 없는 것</h4>
+    <p><b>있음</b> — 샴푸·린스·바디워시·비누, 헤어드라이어, 수건, 다리미</p>
+    <p><b>없는 경우가 많음</b> — <b>칫솔·치약</b>. 미국 호텔은 대부분 제공하지 않으니 꼭 챙기세요.</p>
+    <div class="nt tip">액체류는 <b>100ml 이하 용기</b>에 담아 지퍼백에 넣어야 기내 반입이 됩니다. 큰 통은 위탁 수하물로 부치세요.</div>
+    <div class="nt warn">하와이는 산호에 해로운 성분(옥시벤존·옥티노세이트)이 든 선크림 판매가 금지돼 있습니다. <b>리프세이프(Reef Safe)</b> 표기 제품으로 준비하세요.</div>
   </div>`},
 {t:`🛫 기내 아기 생존 키트`, s:`귀 막힘 · 야간 비행 공략`, h:`<div class="card tone-tip">
     <h4>이착륙 귀 막힘</h4>
@@ -1319,7 +1369,7 @@ document.getElementById('xCopy').addEventListener('click', ()=>{
 renderX();
 
 /* ---------- 두 폰 기록 합치기 ---------- */
-const CK_KEYS = ['main','cabin','hold'];
+const CK_KEYS = ['main','cabin','hold','wear','wash'];
 function packState(){
   return { v:1, exp:X, done:[...doneItems],
     cancel:[...cancelled], extra:extra,
